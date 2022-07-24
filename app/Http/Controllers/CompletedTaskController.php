@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CompletedTask;
+use App\Http\Resources\CompletedTaskResource;
 
 class CompletedTaskController extends Controller
 {
@@ -50,7 +51,7 @@ class CompletedTaskController extends Controller
         return response()->json([
             'success'=> true,
             'message'=>'successfully completed a Task',
-            'data' =>$newTask,
+            'data' =>new CompletedTaskResource($newTask),
         ]);
     }
     public function getCompletedTask(Request $request, $completedtaskId){
@@ -66,9 +67,33 @@ class CompletedTaskController extends Controller
             'success'=> true,
             'message'  => 'task found',
             'data'   => [
-                'property'=>$task
+                'completedTask'=>new CompletedTaskResource($task)
                 
             ]
         ]);
+    }
+    public function search(Request $request){
+        $task =new CompletedTask();
+        $query =$task-> newQuery();
+
+        if($request->has('header')){
+            $query= $query->where('header', $request->header);
+        
+        }
+
+        if($request->has('task')){
+            $query= $query->where('task', $request->task);
+        }
+        
+
+        
+        return response()->json([
+            'success'=> true,
+            'message'=>'search results found',
+            'data'=> $query->get()
+
+            
+        ]);
+        
     }
 }

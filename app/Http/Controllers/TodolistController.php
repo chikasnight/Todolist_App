@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Todolist;
+use App\Http\Resources\TodolistResource;
+
 
 
 class TodolistController extends Controller
@@ -29,7 +31,7 @@ class TodolistController extends Controller
         return response()->json([
             'success'=> true,
             'message'=>'successfully created a Task',
-            'data' =>$newTask,
+            'data' =>new TodolistResource($newTask),
         ]);
     }
     
@@ -57,7 +59,7 @@ class TodolistController extends Controller
         return response() ->json([
             'success' => true,
             'message' => 'Task updated',
-            'data'  =>  $updateTask
+            'data'  => new TodolistResource($updateTask)
         ]);
     }
     public function deleteTask( $todolistId){

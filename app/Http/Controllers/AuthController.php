@@ -117,4 +117,37 @@ class AuthController extends Controller
             'data' =>['token'=> $token]
         ]);
     } 
+    public function updateProfile(Request $request){
+        $request->validate([
+        'current_name'=>['required', /*new CheckPassword()],*/ ],
+            'new_name'=>['required',/*new CheckIfNewPassMatchWithOld(),*/ 'confirmed']
+        ]);
+
+        $user= auth('sanctum')->user();
+        if( Hash::check($request->new_name, $user->name)){
+            return response()->json([
+                'success'=> false,
+                'message'=>'name matches with current name',
+                
+            ]);
+
+        }
+
+        $user ->update(['name'=> Hash::make($request->new_name)]);
+
+        
+        //dwlete any other existing token for user
+        $user->tokens()-> delete();
+
+        //create a new token
+        $token = $user -> createtoken('login')->plainTextToken;
+
+
+        
+        return response()->json([
+            'success'=> true,
+            'message'=>'name updated',
+            'data' =>['token'=> $token]
+        ]);
+    } 
 }
