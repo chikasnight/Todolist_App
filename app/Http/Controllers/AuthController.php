@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -33,7 +34,7 @@ class AuthController extends Controller
             'message'=>'registration successful',
             'data' =>[
                 'token' => $token,
-                'user' => $user
+                'user' => new UserResource ($user)
             ]
         ]);        
     }
